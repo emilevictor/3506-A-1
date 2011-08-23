@@ -2,7 +2,8 @@ package test;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import studentXXXXXXXX.*;
+
+import student41759468.Agent;
 
 public class TestAgent {
 
