@@ -51,6 +51,11 @@ public class Agent implements IAgent {
 		returnedSplitArray = new String[15];
 
 		/**
+		 * Boolean bad used to determine return value
+		 */
+		boolean bad = false;
+		
+		/**
 		 * The contents of the buy/sell command
 		 */
 		String buySell = new String();
@@ -87,19 +92,38 @@ public class Agent implements IAgent {
 			 */
 			while ((lineReadFromBuffer = reader.readLine()) != null) {
 				lineNumber++;
+				if (lineReadFromBuffer.equals("")) {
+					System.err.println("Command on line " + lineNumber + " is not well formed.");
+					bad = true;
+					continue;
+				}
 				//Split for spaces
 				returnedSplitArray = lineReadFromBuffer.split(simpleRegexDelimeter);
 				//Remove the dollar signs
+				if (returnedSplitArray[3].charAt(0) != '$') {
+					System.err.println("Command on line " + lineNumber + " is not well formed.");
+					bad = true;
+					continue;
+				}
 				returnedSplitArray[3] = (String)returnedSplitArray[3].subSequence(1,returnedSplitArray[3].length());
+				
 
 				try {
 					//Set stock, price and quantity for the Stock object.
 					stock.setPrice(Double.parseDouble(returnedSplitArray[3]));
 					stock.setQuantity(Integer.parseInt(returnedSplitArray[2]));
 					stock.setName(returnedSplitArray[1]);
+					
+					//Check for malformed stock name
+					if (stock.getName().length() != 4) {
+						System.err.println("Command on line " + lineNumber + " is not well formed.");
+						bad = true;
+						continue;
+					}
 
 				} catch (Exception e) {
 					System.err.println("Failing to create stock: " + e.getMessage());
+					bad = true;
 				}
 
 				/*
@@ -115,6 +139,8 @@ public class Agent implements IAgent {
 					buyOrders.addHead(node);
 				} else {
 					System.err.println("Command on line " + lineNumber + " is not well formed.");
+					bad = true;
+					
 				}
 
 			}
@@ -124,14 +150,18 @@ public class Agent implements IAgent {
 
 
 		} catch (Exception e) {
-			System.err.println("Unable to read file correctly:" + e.getMessage());
+			System.err.println("Unable to read file correctly: " + e.getMessage());
+			bad = true;
 
 
 		}
 
 
-
-		return 0; // To prevent an error in the project
+		if (bad == true) {
+			return -1;
+		} else {
+			return 0;
+		}
 	}
 
 	/**

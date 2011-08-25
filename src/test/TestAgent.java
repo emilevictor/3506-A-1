@@ -1,12 +1,16 @@
 package test;
 
 import static org.junit.Assert.*;
+
+import java.io.ByteArrayOutputStream;
+
 import org.junit.Test;
 
 import student41759468.Agent;
 
 public class TestAgent {
-
+	//private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+	
 	@Test
 	public void testParseLine() {
 		try {
@@ -21,11 +25,12 @@ public class TestAgent {
 		}
 	}
 	
-	@Test
+@Test
 	public void testParseLine2() {
 		try {
 			Agent a = new Agent();
 			a.parseInput("./test_files/test1_emile.txt");
+//			assertEquals("Command on line 4 is not well formed.", errContent.toString());
 		} catch (Exception e) {
 			fail("Exception occurred" + e.getMessage());
 		}
