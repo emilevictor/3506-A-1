@@ -97,8 +97,6 @@ public class Agent implements IAgent {
 					stock.setQuantity(Integer.parseInt(returnedSplitArray[3]));
 					stock.setName(returnedSplitArray[1]);
 					
-					
-					
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
 				}
