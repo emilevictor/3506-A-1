@@ -3,6 +3,7 @@ package student41759468;
 import java.util.StringTokenizer;
 import datastructures.*;
 import java.io.*;
+import java.lang.reflect.Array;
 /**
  * Agent class
  * 
@@ -32,12 +33,33 @@ public class Agent implements IAgent {
 	 * Takes a file name as input and parses the commands in the file
 	 */
 	public int parseInput(String fileName) {
-		//		String currentDir = new File(".").getAbsolutePath();
+		/**
+		 * The line read from the BufferedReader
+		 */
 		String lineReadFromBuffer;
 		String simpleRegexDelimeter = " ";
-		//		System.out.println(currentDir);
+		/**
+		 * Line number counter
+		 */
+		int lineNumber = 0;
 		
 		/**
+		 * Array split array (for splitting each line)
+		 */
+		String[] returnedSplitArray;
+		returnedSplitArray = new String[15];
+				
+		/**
+		 * The contents of the buy/sell command
+		 */
+		String buySell = new String();
+		String stockCode = new String();
+		int quantity;
+		double price;
+		
+		Stock stock = new Stock();
+		
+		/*
 		 * Kludgey POS: adding /src/test to the file path in order to
 		 * stop the FileNotFound exception in the try/catch below.
 		 */
@@ -45,29 +67,60 @@ public class Agent implements IAgent {
 		stringBuilder.insert(1, "/src/test");
 		fileName = stringBuilder.toString();
 		
-		/**
+		/*
 		 * Regex for this function (perhaps):
 		 * ^(buy|sell)\s\w{4}?\s\d+?\s[$]\d+?[.]\d{0,2}$
 		 */
 		
 		try {
-			/**
+			/*
 			 * Create a file input stream, data input stream from fileinput stream
 			 * and then finally a buffered reader to get the lines out of the file.
 			 */
 			FileInputStream fs = new FileInputStream(fileName);
 			DataInputStream in = new DataInputStream(fs);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-				
-			/**
+			
+			/*
 			 * Iterate over each line.
 			 */
 			while ((lineReadFromBuffer = reader.readLine()) != null) {
+				lineNumber++;
+				//Split for spaces
+				returnedSplitArray = lineReadFromBuffer.split(simpleRegexDelimeter);
+				//Remove the dollar signs
+				returnedSplitArray[3] = (String)returnedSplitArray[3].subSequence(1,returnedSplitArray[3].length());
 				
-				System.out.println(lineReadFromBuffer);
+				try {
+					//Set stock, price and quantity for the Stock object.
+					stock.setPrice(Double.parseDouble(returnedSplitArray[2]));
+					stock.setQuantity(Integer.parseInt(returnedSplitArray[3]));
+					stock.setName(returnedSplitArray[1]);
+					
+					
+					
+				} catch (Exception e) {
+					System.err.println(e.getMessage());
+				}
+				
+				/*
+				 * Create node with array, put into Linked List, 
+				 */
+				
+				if (returnedSplitArray[0].equals("sell")) {
+					System.err.println("Sell!");
+				} else if (returnedSplitArray[0].equals("buy")) {
+					System.err.println("Buy!");
+				} else {
+					System.err.println("Command on line " + lineNumber + " is not well formed.");
+				}
+				
+				
+//				System.out.println(returnedSplitArray[3] + " " + returnedSplitArray[2]);
 			}
 
 			in.close();
+			lineNumber = 0;
 
 
 		} catch (Exception e) {
