@@ -20,6 +20,16 @@ public class TestAgent {
 			fail("Exception occurred.");
 		}
 	}
+	
+	@Test
+	public void testParseLine2() {
+		try {
+			Agent a = new Agent();
+			a.parseInput("./test_files/test1_emile.txt");
+		} catch (Exception e) {
+			fail("Exception occurred" + e.getMessage());
+		}
+	}
 
 	@Test
 	public void testExchange() {
