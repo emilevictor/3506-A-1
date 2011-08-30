@@ -15,9 +15,9 @@ import java.lang.reflect.Array;
  */
 public class Agent implements IAgent {
 
-	private LinkedList<Stock> buyOrders;
-	private LinkedList<Stock> sellOrders;
-	private LinkedList<Stock> transactions;
+	private ArrayVector<Stock> buyOrders;
+	private ArrayVector<Stock> sellOrders;
+	private ArrayVector<Stock> transactions;
 
 	/*
 	 * Default constructor
@@ -25,15 +25,16 @@ public class Agent implements IAgent {
 	public Agent() {
 		// You may choose which data structures you would like to use
 
-		this.buyOrders = new LinkedList<Stock>();
-		this.sellOrders = new LinkedList<Stock>();
-		this.transactions = new LinkedList<Stock>();
+		this.buyOrders = new ArrayVector<Stock>();
+		this.sellOrders = new ArrayVector<Stock>();
+		this.transactions = new ArrayVector<Stock>();
 	}
 
 	/**
 	 * Takes a file name as input and parses the commands in the file
 	 */
 	public int parseInput(String fileName) {
+
 		/**
 		 * The line read from the BufferedReader
 		 */
@@ -54,7 +55,7 @@ public class Agent implements IAgent {
 		 * Boolean bad used to determine return value
 		 */
 		boolean bad = false;
-		
+
 		/**
 		 * The contents of the buy/sell command
 		 */
@@ -63,7 +64,7 @@ public class Agent implements IAgent {
 		int quantity;
 		double price;
 
-		Stock stock = new Stock();
+		//		Stock stock = new Stock();
 
 		/*
 		 * Kludgey POS: adding /src/test to the file path in order to
@@ -91,6 +92,7 @@ public class Agent implements IAgent {
 			 * Iterate over each line.
 			 */
 			while ((lineReadFromBuffer = reader.readLine()) != null) {
+				Stock stock = new Stock();
 				lineNumber++;
 				if (lineReadFromBuffer.equals("")) {
 					System.err.println("Command on line " + lineNumber + " is not well formed.");
@@ -106,14 +108,14 @@ public class Agent implements IAgent {
 					continue;
 				}
 				returnedSplitArray[3] = (String)returnedSplitArray[3].subSequence(1,returnedSplitArray[3].length());
-				
+
 
 				try {
 					//Set stock, price and quantity for the Stock object.
 					stock.setPrice(Double.parseDouble(returnedSplitArray[3]));
 					stock.setQuantity(Integer.parseInt(returnedSplitArray[2]));
 					stock.setName(returnedSplitArray[1]);
-					
+
 					//Check for malformed stock name
 					if (stock.getName().length() != 4) {
 						System.err.println("Command on line " + lineNumber + " is not well formed.");
@@ -131,16 +133,16 @@ public class Agent implements IAgent {
 				 */
 
 				if (returnedSplitArray[0].equals("sell")) {
-					Node<Stock> node = new Node<Stock>(stock,null);
-					sellOrders.addHead(node);
+					//					Node<Stock> node = new Node<Stock>(stock,null);
+					this.sellOrders.add(0,stock);
 
 				} else if (returnedSplitArray[0].equals("buy")) {
-					Node<Stock> node = new Node<Stock>(stock,null);
-					buyOrders.addHead(node);
+					//					Node<Stock> node = new Node<Stock>(stock,null);
+					this.buyOrders.add(0,stock);
 				} else {
 					System.err.println("Command on line " + lineNumber + " is not well formed.");
 					bad = true;
-					
+
 				}
 
 			}
@@ -152,7 +154,6 @@ public class Agent implements IAgent {
 		} catch (Exception e) {
 			System.err.println("Unable to read file correctly: " + e.getMessage());
 			bad = true;
-
 
 		}
 
@@ -168,7 +169,9 @@ public class Agent implements IAgent {
 	 * Tries to match buy and sell orders. See assignment spec for more detail.
 	 */
 	public void exchange() {
-		// Implement this method
+		//while we can still get 
+		//		for ()
+
 	}
 
 	/**
@@ -176,8 +179,21 @@ public class Agent implements IAgent {
 	 * detail.
 	 */
 	public String printQueues() {
-		// Implement this method
-		return ""; // To prevent an error in the project
+		String output = new String();
+		//Print purchases
+		for (int i = 0; i < buyOrders.size(); i++) {
+			output = output.concat("buy ").concat(buyOrders.get(i).getName()).concat(" ").concat(Integer.toString(buyOrders.get(i).getQuantity())).concat(" ").concat("$").concat(String.format("%.2f", buyOrders.get(i).getPrice()) ).concat("\n");
+		}
+		//Print sales
+		for (int j = 0; j < sellOrders.size(); j++) {
+			output = output.concat("sell ").concat(sellOrders.get(j).getName()).concat(" ").concat(Integer.toString(sellOrders.get(j).getQuantity())).concat(" ").concat("$").concat(String.format("%.2f", sellOrders.get(j).getPrice()) ).concat("\n");
+		}
+		//Removing the redundant \n at the end in order to pass test.
+		StringBuffer stringBuff = new StringBuffer(output);
+		stringBuff.delete(output.length()-1, output.length());
+		output = stringBuff.toString();
+		System.out.print(output);
+		return output;
 	}
 
 	/**
