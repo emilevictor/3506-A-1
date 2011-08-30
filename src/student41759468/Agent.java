@@ -169,8 +169,58 @@ public class Agent implements IAgent {
 	 * Tries to match buy and sell orders. See assignment spec for more detail.
 	 */
 	public void exchange() {
+		int sellOrderSize = this.sellOrders.size();
+		boolean noMoreSalesCanBeMade = false;
+		
+		//Loop until we iterate through entire sales queue without finding any possible transactions
+		while (noMoreSalesCanBeMade == false) {
+			
+			
+			//For each sell Order (from the first)
+			for (int i = 0; i < sellOrderSize; i++) {
+				//Get the first, and compare it to the first one in the buy order.
+				if (this.sellOrders.get(0).getName() == this.buyOrders.get(0).getName()) {
+					//If the price is right...
+					if (this.sellOrders.get(0).getPrice() <= this.buyOrders.get(0).getPrice()) {
+							
+					}
+					
+				} else {
+					//If sell order does not match the buy order (stock name)
+					//Put the sell order at the back of the buy order.
+					Stock movingStock = new Stock();
+					movingStock = this.sellOrders.get(0);
+					this.sellOrders.remove(0);
+					this.sellOrders.add(this.sellOrders.size(), movingStock);
+					continue;
+				}
+			}
+			
+			
+			
+		}
+		
+		
 		//while we can still get 
-		//		for ()
+		// Obtain front-of-queue buy order (FIFO)
+			//Iterate through sell orders till one is found that matches STOCK name. (in fifo order)
+				//If sell order does not match buy order
+					//Then Re-add to the sell order as last element (ie will be processed after all others)
+				//If matching prices (ie buy >= sell price)
+					//If stock quantity == buy quantity
+						//Remove buy from queue and add to transactions
+						//Record buy in transactions
+						//Remove sell from queue
+					//If stock quantity > buy quantity
+						//Put buy order on transaction queue
+						//Modify stock order (lower quantity)
+						//Re-add stock order to FRONT of queue
+					//If there aren't enough stocks for sale
+						//Re-add modified buy order to BACK of queue
+			//If no matching sell order
+				//Buy order added as last element in buy vector.
+		
+		//Repeat until entire buy order list can be iterated through without any sales being made.
 
 	}
 
@@ -192,7 +242,6 @@ public class Agent implements IAgent {
 		StringBuffer stringBuff = new StringBuffer(output);
 		stringBuff.delete(output.length()-1, output.length());
 		output = stringBuff.toString();
-		System.out.print(output);
 		return output;
 	}
 
