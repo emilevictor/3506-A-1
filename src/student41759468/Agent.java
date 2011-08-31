@@ -172,22 +172,19 @@ public class Agent implements IAgent {
 
 		boolean noMoreSalesCanBeMade = false;
 		boolean stopProcessing = false;
-
+		System.out.println("made it to the while loop");
 		//Loop until we iterate through entire sales queue without finding any possible transactions
 		while (stopProcessing == false) {
 			int sellOrderSize = this.sellOrders.size();
 			noMoreSalesCanBeMade = false;
+			
 			//For each sell Order  (from the first)
 			for (int i = 0; i < sellOrderSize; i++) {
-				if ((i == (sellOrderSize-1))&&(noMoreSalesCanBeMade == false)) {
-					stopProcessing = true;
-				}
-				System.out.println(Integer.toString(i));
-
+				System.out.println(this.buyOrders.get(0).toString());
 
 				//Get the first, and compare it to the first one in the buy order.
-				if (this.sellOrders.get(0).getName() == this.buyOrders.get(0).getName()) {
-
+				if (this.sellOrders.get(0).getName().equals(this.buyOrders.get(0).getName())) {
+					System.out.println("names match");
 
 					//If the price is right...
 					if (this.sellOrders.get(0).getPrice() <= this.buyOrders.get(0).getPrice()) {
@@ -200,6 +197,7 @@ public class Agent implements IAgent {
 							//Modify the number of stocks for sale
 							this.sellOrders.get(0).setQuantity(this.sellOrders.get(0).getQuantity() - this.buyOrders.get(0).getQuantity());
 							this.buyOrders.remove(0);
+							System.out.println("sale made");
 							noMoreSalesCanBeMade = true;
 							continue;
 
@@ -210,6 +208,7 @@ public class Agent implements IAgent {
 							//Then, remove buy and sell orders from the front.
 							this.buyOrders.remove(0);
 							this.sellOrders.remove(0);
+							System.out.println("sale made");
 							noMoreSalesCanBeMade = true;
 							continue;
 
@@ -228,6 +227,7 @@ public class Agent implements IAgent {
 							this.buyOrders.add(this.buyOrders.size(), movingStock);
 							//And we're done for now.
 							noMoreSalesCanBeMade = true;
+							System.out.println("sale made");
 							continue;
 						}
 
@@ -238,7 +238,7 @@ public class Agent implements IAgent {
 						movingStock = this.sellOrders.get(0);
 						this.sellOrders.remove(0);
 						this.sellOrders.add(this.sellOrders.size(), movingStock);
-						noMoreSalesCanBeMade = true;
+						System.out.println("PRICE NOT RIGHT");
 						continue;
 					}
 
@@ -249,14 +249,31 @@ public class Agent implements IAgent {
 					movingStock = this.sellOrders.get(0);
 					this.sellOrders.remove(0);
 					this.sellOrders.add(this.sellOrders.size(), movingStock);
-					noMoreSalesCanBeMade = true;
+					System.out.println("sale NOT MADE");
 					continue;
 				}
+				//Check whether the last pass 
+				
+			}
+			
+			//If no sale was made for that PARTICULAR buy request...
+			if (noMoreSalesCanBeMade == false) {
+				stopProcessing = true;
+				continue;
+			}
+			
+			if (this.buyOrders.size() > 0) {
+				Stock movingStock = new Stock();
+				movingStock = this.buyOrders.get(0);
+				this.buyOrders.remove(0);
+				this.buyOrders.add(this.buyOrders.size(), movingStock);
+			} else {
+				break;
 			}
 
 
-
 		}
+		System.out.println("while loop complete");
 
 
 		//while we can still get 
@@ -308,8 +325,14 @@ public class Agent implements IAgent {
 	 * detail.
 	 */
 	public String printTransactions() {
-		// Implement this method
-		return ""; // To prevent an error in the project
+		String output = new String();
+		for (int i = 0; i < this.transactions.size(); i++) {
+			output = output.concat(this.transactions.get(i).getName()).concat(" ").concat(Integer.toString(transactions.get(i).getQuantity())).concat(" ").concat("$").concat(String.format("%.2f", transactions.get(i).getPrice()) ).concat("\n");
+		}
+		StringBuffer stringBuff = new StringBuffer(output);
+		stringBuff.delete(output.length()-1, output.length());
+		output = stringBuff.toString();
+		return output; // To prevent an error in the project
 
 	}
 
