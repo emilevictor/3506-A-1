@@ -169,25 +169,54 @@ public class Agent implements IAgent {
 	 * Tries to match buy and sell orders. See assignment spec for more detail.
 	 */
 	public void exchange() {
-		int sellOrderSize = this.sellOrders.size();
+
 		boolean noMoreSalesCanBeMade = false;
-		
+
 		//Loop until we iterate through entire sales queue without finding any possible transactions
 		while (noMoreSalesCanBeMade == false) {
-			
-			
+			int sellOrderSize = this.sellOrders.size();
+
 			//For each sell Order (from the first)
 			for (int i = 0; i < sellOrderSize; i++) {
 				//Get the first, and compare it to the first one in the buy order.
 				if (this.sellOrders.get(0).getName() == this.buyOrders.get(0).getName()) {
 					//If the price is right...
 					if (this.sellOrders.get(0).getPrice() <= this.buyOrders.get(0).getPrice()) {
-							
+						//If there are more for sale than offered to buy
+						if (this.sellOrders.get(0).getQuantity() > this.buyOrders.get(0).getQuantity()) {
+							this.buyOrders.get(0).toString();
+						//Or if there are exactly the same amount of stocks for sale and for purchase
+						} else if (this.sellOrders.get(0).getQuantity() == this.buyOrders.get(0).getQuantity()) {
+							//Add the buy order to the back of the transactions queue.
+							this.transactions.add(this.transactions.size(), this.buyOrders.get(0));
+							//Then, remove buy and sell orders from the front.
+							this.buyOrders.remove(0);
+							this.sellOrders.remove(0);
+						//If there are more being requested for purchase than are available for sale
+						} else if (this.sellOrders.get(0).getQuantity() < this.buyOrders.get(0).getQuantity()) {
+							//Add sell order to the transaction list
+							this.transactions.add(this.transactions.size(), this.sellOrders.get(0));
+							//Update the buy order with the proper amount
+							this.sellOrders.get(0).setQuantity(this.sellOrders.get(0).getQuantity() - this.buyOrders.get(0).getQuantity());
+							//Put the buy order at the back of its queue.
+							Stock movingStock = new Stock();
+							movingStock = this.buyOrders.get(0);
+							this.buyOrders.remove(0);
+							this.buyOrders.add(this.buyOrders.size(), movingStock);
+							//And we're done for now.
+							continue;
+						}
+					//If the price isn't right, put the sell order at the back of the sell order queue.
+					} else {
+						Stock movingStock = new Stock();
+						movingStock = this.sellOrders.get(0);
+						this.sellOrders.remove(0);
+						this.sellOrders.add(this.sellOrders.size(), movingStock);
 					}
-					
+
 				} else {
 					//If sell order does not match the buy order (stock name)
-					//Put the sell order at the back of the buy order.
+					//Put the sell order at the back of the sell queue.
 					Stock movingStock = new Stock();
 					movingStock = this.sellOrders.get(0);
 					this.sellOrders.remove(0);
@@ -195,31 +224,31 @@ public class Agent implements IAgent {
 					continue;
 				}
 			}
-			
-			
-			
+
+
+
 		}
-		
-		
+
+
 		//while we can still get 
 		// Obtain front-of-queue buy order (FIFO)
-			//Iterate through sell orders till one is found that matches STOCK name. (in fifo order)
-				//If sell order does not match buy order
-					//Then Re-add to the sell order as last element (ie will be processed after all others)
-				//If matching prices (ie buy >= sell price)
-					//If stock quantity == buy quantity
-						//Remove buy from queue and add to transactions
-						//Record buy in transactions
-						//Remove sell from queue
-					//If stock quantity > buy quantity
-						//Put buy order on transaction queue
-						//Modify stock order (lower quantity)
-						//Re-add stock order to FRONT of queue
-					//If there aren't enough stocks for sale
-						//Re-add modified buy order to BACK of queue
-			//If no matching sell order
-				//Buy order added as last element in buy vector.
-		
+		//Iterate through sell orders till one is found that matches STOCK name. (in fifo order)
+		//If sell order does not match buy order
+		//Then Re-add to the sell order as last element (ie will be processed after all others)
+		//If matching prices (ie buy >= sell price)
+		//If stock quantity == buy quantity
+		//Remove buy from queue and add to transactions
+		//Record buy in transactions
+		//Remove sell from queue
+		//If stock quantity > buy quantity
+		//Put buy order on transaction queue
+		//Modify stock order (lower quantity)
+		//Re-add stock order to FRONT of queue
+		//If there aren't enough stocks for sale
+		//Re-add modified buy order to BACK of queue
+		//If no matching sell order
+		//Buy order added as last element in buy vector.
+
 		//Repeat until entire buy order list can be iterated through without any sales being made.
 
 	}
