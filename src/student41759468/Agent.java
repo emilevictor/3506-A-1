@@ -171,47 +171,75 @@ public class Agent implements IAgent {
 	public void exchange() {
 
 		boolean noMoreSalesCanBeMade = false;
+		boolean stopProcessing = false;
 
 		//Loop until we iterate through entire sales queue without finding any possible transactions
-		while (noMoreSalesCanBeMade == false) {
+		while (stopProcessing == false) {
 			int sellOrderSize = this.sellOrders.size();
-
-			//For each sell Order (from the first)
+			noMoreSalesCanBeMade = false;
+			//For each sell Order  (from the first)
 			for (int i = 0; i < sellOrderSize; i++) {
+				if ((i == (sellOrderSize-1))&&(noMoreSalesCanBeMade == false)) {
+					stopProcessing = true;
+				}
+				System.out.println(Integer.toString(i));
+
+
 				//Get the first, and compare it to the first one in the buy order.
 				if (this.sellOrders.get(0).getName() == this.buyOrders.get(0).getName()) {
+
+
 					//If the price is right...
 					if (this.sellOrders.get(0).getPrice() <= this.buyOrders.get(0).getPrice()) {
+
+
 						//If there are more for sale than offered to buy
 						if (this.sellOrders.get(0).getQuantity() > this.buyOrders.get(0).getQuantity()) {
-							this.buyOrders.get(0).toString();
-						//Or if there are exactly the same amount of stocks for sale and for purchase
+							//We need to put the buy order on transaction queue
+							this.transactions.add(this.transactions.size(), this.buyOrders.get(0));
+							//Modify the number of stocks for sale
+							this.sellOrders.get(0).setQuantity(this.sellOrders.get(0).getQuantity() - this.buyOrders.get(0).getQuantity());
+							this.buyOrders.remove(0);
+							noMoreSalesCanBeMade = true;
+							continue;
+
+							//Or if there are exactly the same amount of stocks for sale and for purchase
 						} else if (this.sellOrders.get(0).getQuantity() == this.buyOrders.get(0).getQuantity()) {
 							//Add the buy order to the back of the transactions queue.
 							this.transactions.add(this.transactions.size(), this.buyOrders.get(0));
 							//Then, remove buy and sell orders from the front.
 							this.buyOrders.remove(0);
 							this.sellOrders.remove(0);
-						//If there are more being requested for purchase than are available for sale
+							noMoreSalesCanBeMade = true;
+							continue;
+
+							//If there are more being requested for purchase than are available for sale
 						} else if (this.sellOrders.get(0).getQuantity() < this.buyOrders.get(0).getQuantity()) {
 							//Add sell order to the transaction list
 							this.transactions.add(this.transactions.size(), this.sellOrders.get(0));
 							//Update the buy order with the proper amount
-							this.sellOrders.get(0).setQuantity(this.sellOrders.get(0).getQuantity() - this.buyOrders.get(0).getQuantity());
+							this.buyOrders.get(0).setQuantity(this.buyOrders.get(0).getQuantity() - this.sellOrders.get(0).getQuantity());
+							//Remove the sell order, because we have bought everything in it
+							this.sellOrders.remove(0);
 							//Put the buy order at the back of its queue.
 							Stock movingStock = new Stock();
 							movingStock = this.buyOrders.get(0);
 							this.buyOrders.remove(0);
 							this.buyOrders.add(this.buyOrders.size(), movingStock);
 							//And we're done for now.
+							noMoreSalesCanBeMade = true;
 							continue;
 						}
-					//If the price isn't right, put the sell order at the back of the sell order queue.
+
+
+						//If the price isn't right, put the sell order at the back of the sell order queue.
 					} else {
 						Stock movingStock = new Stock();
 						movingStock = this.sellOrders.get(0);
 						this.sellOrders.remove(0);
 						this.sellOrders.add(this.sellOrders.size(), movingStock);
+						noMoreSalesCanBeMade = true;
+						continue;
 					}
 
 				} else {
@@ -221,6 +249,7 @@ public class Agent implements IAgent {
 					movingStock = this.sellOrders.get(0);
 					this.sellOrders.remove(0);
 					this.sellOrders.add(this.sellOrders.size(), movingStock);
+					noMoreSalesCanBeMade = true;
 					continue;
 				}
 			}
