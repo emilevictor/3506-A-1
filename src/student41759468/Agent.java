@@ -70,9 +70,9 @@ public class Agent implements IAgent {
 		 * Kludgey POS: adding /src/test to the file path in order to
 		 * stop the FileNotFound exception in the try/catch below.
 		 */
-		StringBuilder stringBuilder = new StringBuilder(fileName);
-		stringBuilder.insert(1, "/src/test");
-		fileName = stringBuilder.toString();
+//		StringBuilder stringBuilder = new StringBuilder(fileName);
+//		stringBuilder.insert(1, "/src/test");
+//		fileName = stringBuilder.toString();
 
 		/*
 		 * Regex for this function (perhaps):
@@ -260,6 +260,8 @@ public class Agent implements IAgent {
 			if (noMoreSalesCanBeMade == false) {
 				stopProcessing = true;
 				continue;
+			} else {
+				noMoreSalesCanBeMade = false;
 			}
 			
 			if (this.buyOrders.size() > 0) {
