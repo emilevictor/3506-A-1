@@ -1,0 +1,9 @@
+buy ABCD 10 $5
+buy JKDL 80 $10
+buy ABCD 10 $5
+sell ABCD 100 $4
+sell JKDL 50 $9
+buy ABCD 5 $5
+sell ABCD 5 $4
+sell JKDL 10 $9
+

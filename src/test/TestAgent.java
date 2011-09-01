@@ -11,7 +11,7 @@ import student41759468.*;
 
 public class TestAgent {
 
-	@Test
+	//@Test
 	public void testParseLine() {
 		try {
 			Agent a = new Agent();
@@ -25,7 +25,7 @@ public class TestAgent {
 		}
 	}
 
-	@Test
+	//@Test
 	public void testExchange() {
 		try {
 			// Can't exchange
@@ -60,7 +60,7 @@ public class TestAgent {
 		}
 	}
 
-	@Test
+	//@Test
 	public void testPrintTransactions() {
 		try {
 			// Can't exchange
@@ -78,7 +78,7 @@ public class TestAgent {
 		}
 	}
 
-	@Test
+	//@Test
 	public void testPrintQueues() {
 		try {
 			Agent a = new Agent();
@@ -124,7 +124,7 @@ public class TestAgent {
 		Agent a = new Agent();
 
 		beginTime = System.currentTimeMillis();
-		a.parseInput("stocklist-1.txt");
+		a.parseInput("src/test/test_files/stocklist-1.txt");
 		endTime = System.currentTimeMillis();
 		System.out.print("Parse 10 records = ");
 		System.out.println(endTime - beginTime);
@@ -145,13 +145,13 @@ public class TestAgent {
 		System.out.println(endTime - beginTime);
 	}	
 
-	//@Test
+	@Test
 	public void test100Transactions() {
 		long beginTime, endTime;
 		Agent a = new Agent();
 
 		beginTime = System.currentTimeMillis();
-		a.parseInput("stocklist-2.txt");
+		a.parseInput("src/test/test_files/stocklist-2.txt");
 		endTime = System.currentTimeMillis();
 		System.out.print("Parse 100 records = ");
 		System.out.println(endTime - beginTime);
@@ -178,7 +178,7 @@ public class TestAgent {
 		Agent a = new Agent();
 
 		beginTime = System.currentTimeMillis();
-		a.parseInput("stocklist-3.txt");
+		a.parseInput("src/test/test_files/stocklist-3.txt");
 		endTime = System.currentTimeMillis();
 		System.out.print("Parse 1000 records = ");
 		System.out.println(endTime - beginTime);
@@ -205,7 +205,7 @@ public class TestAgent {
 		Agent a = new Agent();
 
 		beginTime = System.currentTimeMillis();
-		a.parseInput("stocklist-4.txt");
+		a.parseInput("src/test/test_files/stocklist-4.txt");
 		endTime = System.currentTimeMillis();
 		System.out.print("Parse 10000 records = ");
 		System.out.println(endTime - beginTime);
@@ -235,7 +235,7 @@ public class TestAgent {
 		Agent a = new Agent();
 
 		beginTime = System.currentTimeMillis();
-		a.parseInput("stocklist-5.txt");
+		a.parseInput("src/test/test_files/stocklist-5.txt");
 		endTime = System.currentTimeMillis();
 		System.out.print("Parse 100000 records = ");
 		System.out.println(endTime - beginTime);

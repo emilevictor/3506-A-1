@@ -1,10 +1,10 @@
 package student41759468;
 
-import java.util.StringTokenizer;
+//import java.util.StringTokenizer;
 import datastructures.*;
 
 import java.io.*;
-import java.lang.reflect.Array;
+//import java.lang.reflect.Array;
 /**
  * Agent class
  * 
@@ -70,9 +70,9 @@ public class Agent implements IAgent {
 		 * Kludgey POS: adding /src/test to the file path in order to
 		 * stop the FileNotFound exception in the try/catch below.
 		 */
-//		StringBuilder stringBuilder = new StringBuilder(fileName);
-//		stringBuilder.insert(1, "/src/test");
-//		fileName = stringBuilder.toString();
+		//		StringBuilder stringBuilder = new StringBuilder(fileName);
+		//		stringBuilder.insert(1, "/src/test");
+		//		fileName = stringBuilder.toString();
 
 		/*
 		 * Regex for this function (perhaps):
@@ -134,11 +134,11 @@ public class Agent implements IAgent {
 
 				if (returnedSplitArray[0].equals("sell")) {
 					//					Node<Stock> node = new Node<Stock>(stock,null);
-					this.sellOrders.add(0,stock);
+					this.sellOrders.add(this.sellOrders.size(),stock);
 
 				} else if (returnedSplitArray[0].equals("buy")) {
 					//					Node<Stock> node = new Node<Stock>(stock,null);
-					this.buyOrders.add(0,stock);
+					this.buyOrders.add(this.buyOrders.size(),stock);
 				} else {
 					System.err.println("Command on line " + lineNumber + " is not well formed.");
 					bad = true;
@@ -172,98 +172,96 @@ public class Agent implements IAgent {
 
 		boolean noMoreSalesCanBeMade = false;
 		boolean stopProcessing = false;
-		System.out.println("made it to the while loop");
+		//System.out.println("made it to the while loop");
 		//Loop until we iterate through entire sales queue without finding any possible transactions
 		while (stopProcessing == false) {
-			int sellOrderSize = this.sellOrders.size();
+			//			int sellOrderSize = this.sellOrders.size();
+			//			int buyOrderSize = this.buyOrders.size();
 			noMoreSalesCanBeMade = false;
-			
-			//For each sell Order  (from the first)
-			for (int i = 0; i < sellOrderSize; i++) {
-				System.out.println(this.buyOrders.get(0).toString());
+			for (int j = 0; j < this.buyOrders.size(); j++) {
+				//For each sell Order  (from the first)
+				for (int i = 0; i < this.sellOrders.size(); i++) {
+					//System.out.println(this.buyOrders.get(0).toString());
 
-				//Get the first, and compare it to the first one in the buy order.
-				if (this.sellOrders.get(0).getName().equals(this.buyOrders.get(0).getName())) {
-					System.out.println("names match");
+					//Get the first, and compare it to the first one in the buy order.
+					if (this.sellOrders.get(0).getName().equals(this.buyOrders.get(0).getName())) {
+						//System.out.println("names match");
 
-					//If the price is right...
-					if (this.sellOrders.get(0).getPrice() <= this.buyOrders.get(0).getPrice()) {
+						//If the price is right...
+						if (this.sellOrders.get(0).getPrice() <= this.buyOrders.get(0).getPrice()) {
 
 
-						//If there are more for sale than offered to buy
-						if (this.sellOrders.get(0).getQuantity() > this.buyOrders.get(0).getQuantity()) {
-							//We need to put the buy order on transaction queue
-							this.transactions.add(this.transactions.size(), this.buyOrders.get(0));
-							//Modify the number of stocks for sale
-							this.sellOrders.get(0).setQuantity(this.sellOrders.get(0).getQuantity() - this.buyOrders.get(0).getQuantity());
-							this.buyOrders.remove(0);
-							System.out.println("sale made");
-							noMoreSalesCanBeMade = true;
-							continue;
+							//If there are more for sale than offered to buy
+							if (this.sellOrders.get(0).getQuantity() > this.buyOrders.get(0).getQuantity()) {
+								//We need to put the buy order on transaction queue
+								this.transactions.add(this.transactions.size(), this.buyOrders.get(0));
+								//Modify the number of stocks for sale
+								this.sellOrders.get(0).setQuantity(this.sellOrders.get(0).getQuantity() - this.buyOrders.get(0).getQuantity());
+								this.buyOrders.remove(0);
+								//System.out.println("sale made");
+								noMoreSalesCanBeMade = true;
+								i = 0;
+								continue;
 
-							//Or if there are exactly the same amount of stocks for sale and for purchase
-						} else if (this.sellOrders.get(0).getQuantity() == this.buyOrders.get(0).getQuantity()) {
-							//Add the buy order to the back of the transactions queue.
-							this.transactions.add(this.transactions.size(), this.buyOrders.get(0));
-							//Then, remove buy and sell orders from the front.
-							this.buyOrders.remove(0);
-							this.sellOrders.remove(0);
-							System.out.println("sale made");
-							noMoreSalesCanBeMade = true;
-							continue;
+								//Or if there are exactly the same amount of stocks for sale and for purchase
+							} else if (this.sellOrders.get(0).getQuantity() == this.buyOrders.get(0).getQuantity()) {
+								//Add the buy order to the back of the transactions queue.
+								this.transactions.add(this.transactions.size(), this.buyOrders.get(0));
+								//Then, remove buy and sell orders from the front.
+								this.buyOrders.remove(0);
+								this.sellOrders.remove(0);
+								//System.out.println("sale made");
+								i = 0;
+								noMoreSalesCanBeMade = true;
+								continue;
 
-							//If there are more being requested for purchase than are available for sale
-						} else if (this.sellOrders.get(0).getQuantity() < this.buyOrders.get(0).getQuantity()) {
-							//Add sell order to the transaction list
-							this.transactions.add(this.transactions.size(), this.sellOrders.get(0));
-							//Update the buy order with the proper amount
-							this.buyOrders.get(0).setQuantity(this.buyOrders.get(0).getQuantity() - this.sellOrders.get(0).getQuantity());
-							//Remove the sell order, because we have bought everything in it
-							this.sellOrders.remove(0);
-							//Put the buy order at the back of its queue.
+								//If there are more being requested for purchase than are available for sale
+							} else if (this.sellOrders.get(0).getQuantity() < this.buyOrders.get(0).getQuantity()) {
+								//Add sell order to the transaction list
+								this.transactions.add(this.transactions.size(), this.sellOrders.get(0));
+								//Update the buy order with the proper amount
+								this.buyOrders.get(0).setQuantity(this.buyOrders.get(0).getQuantity() - this.sellOrders.get(0).getQuantity());
+								//Remove the sell order, because we have bought everything in it
+								this.sellOrders.remove(0);
+								//Put the buy order at the back of its queue.
+								Stock movingStock = new Stock();
+								movingStock = this.buyOrders.get(0);
+								this.buyOrders.remove(0);
+								this.buyOrders.add(this.buyOrders.size(), movingStock);
+								//And we're done for now.
+								noMoreSalesCanBeMade = true;
+								i = 0;
+								//System.out.println("sale made");
+								continue;
+							}
+
+
+							//If the price isn't right, put the sell order at the back of the sell order queue.
+						} else {
 							Stock movingStock = new Stock();
-							movingStock = this.buyOrders.get(0);
-							this.buyOrders.remove(0);
-							this.buyOrders.add(this.buyOrders.size(), movingStock);
-							//And we're done for now.
-							noMoreSalesCanBeMade = true;
-							System.out.println("sale made");
+							movingStock = this.sellOrders.get(0);
+							this.sellOrders.remove(0);
+							this.sellOrders.add(this.sellOrders.size(), movingStock);
+							//System.out.println("PRICE NOT RIGHT");
 							continue;
 						}
 
-
-						//If the price isn't right, put the sell order at the back of the sell order queue.
 					} else {
+						//If sell order does not match the buy order (stock name)
+						//Put the sell order at the back of the sell queue.
 						Stock movingStock = new Stock();
 						movingStock = this.sellOrders.get(0);
 						this.sellOrders.remove(0);
 						this.sellOrders.add(this.sellOrders.size(), movingStock);
-						System.out.println("PRICE NOT RIGHT");
+						//System.out.println("sale NOT MADE");
 						continue;
 					}
+					//Check whether the last pass 
 
-				} else {
-					//If sell order does not match the buy order (stock name)
-					//Put the sell order at the back of the sell queue.
-					Stock movingStock = new Stock();
-					movingStock = this.sellOrders.get(0);
-					this.sellOrders.remove(0);
-					this.sellOrders.add(this.sellOrders.size(), movingStock);
-					System.out.println("sale NOT MADE");
-					continue;
 				}
-				//Check whether the last pass 
-				
 			}
-			
-			//If no sale was made for that PARTICULAR buy request...
-			if (noMoreSalesCanBeMade == false) {
-				stopProcessing = true;
-				continue;
-			} else {
-				noMoreSalesCanBeMade = false;
-			}
-			
+
+
 			if (this.buyOrders.size() > 0) {
 				Stock movingStock = new Stock();
 				movingStock = this.buyOrders.get(0);
@@ -272,32 +270,19 @@ public class Agent implements IAgent {
 			} else {
 				break;
 			}
+			//If no sale was made for that PARTICULAR buy request...
 
+			if (noMoreSalesCanBeMade == false) {
+				stopProcessing = true;
+				continue;
+			} else {
+				noMoreSalesCanBeMade = false;
+			}
 
 		}
-		System.out.println("while loop complete");
+		//System.out.println("while loop complete");
 
 
-		//while we can still get 
-		// Obtain front-of-queue buy order (FIFO)
-		//Iterate through sell orders till one is found that matches STOCK name. (in fifo order)
-		//If sell order does not match buy order
-		//Then Re-add to the sell order as last element (ie will be processed after all others)
-		//If matching prices (ie buy >= sell price)
-		//If stock quantity == buy quantity
-		//Remove buy from queue and add to transactions
-		//Record buy in transactions
-		//Remove sell from queue
-		//If stock quantity > buy quantity
-		//Put buy order on transaction queue
-		//Modify stock order (lower quantity)
-		//Re-add stock order to FRONT of queue
-		//If there aren't enough stocks for sale
-		//Re-add modified buy order to BACK of queue
-		//If no matching sell order
-		//Buy order added as last element in buy vector.
-
-		//Repeat until entire buy order list can be iterated through without any sales being made.
 
 	}
 
