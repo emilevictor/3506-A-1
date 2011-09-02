@@ -172,7 +172,7 @@ public class TestAgent {
 		System.out.println(endTime - beginTime);
 	}
 
-	//@Test
+	@Test
 	public void test1000Transactions() {
 		long beginTime, endTime;
 		Agent a = new Agent();
@@ -199,7 +199,7 @@ public class TestAgent {
 		System.out.println(endTime - beginTime);
 	}
 
-	//@Test
+	@Test
 	public void test10000Transactions() {
 		long beginTime, endTime;
 		Agent a = new Agent();

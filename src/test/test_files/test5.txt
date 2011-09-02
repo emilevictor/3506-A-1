@@ -1,9 +1,13 @@
-buy ABCD 10 $5
+buy ABCCD 10 $5
 buy JKDL 80 $10
-buy ABCD 10 $5
+buuy ABCD 10 $5
 sell ABCD 100 $4
 sell JKDL 50 $9
 buy ABCD 5 $5
 sell ABCD 5 $4
 sell JKDL 10 $9
+sell 
 
+buy LOLOL 100000000 $
+buy LOLO 1 10
+buy LOLO 65536 $9999.999999999

@@ -13,21 +13,21 @@ import java.io.*;
  * @author Emile Victor
  *
  */
-public class Agent implements IAgent {
+public class Agent_withAllArrayVectors implements IAgent {
 
-	private ListQueue<Stock> buyOrders;
+	private ArrayVector<Stock> buyOrders;
 	private ArrayVector<Stock> sellOrders;
-	private ListQueue<Stock> transactions;
+	private ArrayVector<Stock> transactions;
 
 	/*
 	 * Default constructor
 	 */
-	public Agent() {
+	public Agent_withAllArrayVectors() {
 		// You may choose which data structures you would like to use
 
-		this.buyOrders = new ListQueue<Stock>();
+		this.buyOrders = new ArrayVector<Stock>();
 		this.sellOrders = new ArrayVector<Stock>();
-		this.transactions = new ListQueue<Stock>();
+		this.transactions = new ArrayVector<Stock>();
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class Agent implements IAgent {
 
 				} else if (returnedSplitArray[0].equals("buy")) {
 					//					Node<Stock> node = new Node<Stock>(stock,null);
-					this.buyOrders.enqueue(stock);
+					this.buyOrders.add(this.buyOrders.size(),stock);
 				} else {
 					System.err.println("Command on line " + lineNumber + " is not well formed.");
 					bad = true;
@@ -185,31 +185,31 @@ public class Agent implements IAgent {
 					count++;
 //					System.out.println(Integer.toString(count));
 					//Get the first, and compare it to the first one in the buy order.
-					if (this.sellOrders.get(0).getName().equals(this.buyOrders.front().getName())) {
+					if (this.sellOrders.get(0).getName().equals(this.buyOrders.get(0).getName())) {
 						//System.out.println("names match");
 
 						//If the price is right...
-						if (this.sellOrders.get(0).getPrice() <= this.buyOrders.front().getPrice()) {
+						if (this.sellOrders.get(0).getPrice() <= this.buyOrders.get(0).getPrice()) {
 
 
 							//If there are more for sale than offered to buy
-							if (this.sellOrders.get(0).getQuantity() > this.buyOrders.front().getQuantity()) {
+							if (this.sellOrders.get(0).getQuantity() > this.buyOrders.get(0).getQuantity()) {
 								//We need to put the buy order on transaction queue
-								this.transactions.enqueue(this.buyOrders.front());
+								this.transactions.add(this.transactions.size(), this.buyOrders.get(0));
 								//Modify the number of stocks for sale
-								this.sellOrders.get(0).setQuantity(this.sellOrders.get(0).getQuantity() - this.buyOrders.front().getQuantity());
-								this.buyOrders.dequeue();
+								this.sellOrders.get(0).setQuantity(this.sellOrders.get(0).getQuantity() - this.buyOrders.get(0).getQuantity());
+								this.buyOrders.remove(0);
 								//System.out.println("sale made");
 								noMoreSalesCanBeMade = true;
 								//i = 0;
 								continue;
 
 								//Or if there are exactly the same amount of stocks for sale and for purchase
-							} else if (this.sellOrders.get(0).getQuantity() == this.buyOrders.front().getQuantity()) {
+							} else if (this.sellOrders.get(0).getQuantity() == this.buyOrders.get(0).getQuantity()) {
 								//Add the buy order to the back of the transactions queue.
-								this.transactions.enqueue(this.buyOrders.front());
+								this.transactions.add(this.transactions.size(), this.buyOrders.get(0));
 								//Then, remove buy and sell orders from the front.
-								this.buyOrders.dequeue();
+								this.buyOrders.remove(0);
 								this.sellOrders.remove(0);
 								//System.out.println("sale made");
 								//i = 0;
@@ -217,16 +217,18 @@ public class Agent implements IAgent {
 								continue;
 
 								//If there are more being requested for purchase than are available for sale
-							} else if (this.sellOrders.get(0).getQuantity() < this.buyOrders.front().getQuantity()) {
+							} else if (this.sellOrders.get(0).getQuantity() < this.buyOrders.get(0).getQuantity()) {
 								//Add sell order to the transaction list
-								this.transactions.enqueue(this.sellOrders.get(0));
+								this.transactions.add(this.transactions.size(), this.sellOrders.get(0));
 								//Update the buy order with the proper amount
-								this.buyOrders.front().setQuantity(this.buyOrders.front().getQuantity() - this.sellOrders.get(0).getQuantity());
+								this.buyOrders.get(0).setQuantity(this.buyOrders.get(0).getQuantity() - this.sellOrders.get(0).getQuantity());
 								//Remove the sell order, because we have bought everything in it
 								this.sellOrders.remove(0);
 								//Put the buy order at the back of its queue.
-								this.buyOrders.enqueue(this.buyOrders.front());
-								this.buyOrders.dequeue();
+								Stock movingStock = new Stock();
+								movingStock = this.buyOrders.get(0);
+								this.buyOrders.remove(0);
+								this.buyOrders.add(this.buyOrders.size(), movingStock);
 								//And we're done for now.
 								noMoreSalesCanBeMade = true;
 								//i = 0;
@@ -262,8 +264,10 @@ public class Agent implements IAgent {
 
 
 			if (this.buyOrders.size() > 0) {
-				this.buyOrders.enqueue(this.buyOrders.front());
-				this.buyOrders.dequeue();
+				Stock movingStock = new Stock();
+				movingStock = this.buyOrders.get(0);
+				this.buyOrders.remove(0);
+				this.buyOrders.add(this.buyOrders.size(), movingStock);
 			} else {
 				break;
 			}
@@ -291,7 +295,7 @@ public class Agent implements IAgent {
 		String output = new String();
 		//Print purchases
 		for (int i = 0; i < buyOrders.size(); i++) {
-			output = output.concat("buy ").concat(buyOrders.front().getName()).concat(" ").concat(Integer.toString(buyOrders.front().getQuantity())).concat(" ").concat("$").concat(String.format("%.2f", buyOrders.front().getPrice()) ).concat("\n");
+			output = output.concat("buy ").concat(buyOrders.get(i).getName()).concat(" ").concat(Integer.toString(buyOrders.get(i).getQuantity())).concat(" ").concat("$").concat(String.format("%.2f", buyOrders.get(i).getPrice()) ).concat("\n");
 		}
 		//Print sales
 		for (int j = 0; j < sellOrders.size(); j++) {
@@ -313,7 +317,7 @@ public class Agent implements IAgent {
 	public String printTransactions() {
 		String output = new String();
 		for (int i = 0; i < this.transactions.size(); i++) {
-			output = output.concat(this.transactions.front().getName()).concat(" ").concat(Integer.toString(transactions.front().getQuantity())).concat(" ").concat("$").concat(String.format("%.2f", transactions.front().getPrice()) ).concat("\n");
+			output = output.concat(this.transactions.get(i).getName()).concat(" ").concat(Integer.toString(transactions.get(i).getQuantity())).concat(" ").concat("$").concat(String.format("%.2f", transactions.get(i).getPrice()) ).concat("\n");
 		}
 		if (output.length() > 1) {
 			StringBuffer stringBuff = new StringBuffer(output);
